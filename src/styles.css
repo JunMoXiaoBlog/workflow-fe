@@ -1,0 +1,1114 @@
+/* styles.css - 完整文件 */
+
+/* ========== 基础应用样式 ========== */
+.App {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  color: #333;
+  overflow: hidden;
+}
+
+.app-header {
+  padding: 10px 15px;
+  background-color: #4285f4;
+  color: white;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* ========== 工作流编辑器布局 ========== */
+.workflow-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ========== 工具栏样式 ========== */
+.toolbar {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.workflow-name-input {
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-right: 15px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.toolbar-button {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbar-button:hover {
+  background-color: #f1f3f5;
+}
+
+.toolbar-button.primary {
+  background-color: #4285f4;
+  color: white;
+  border-color: #4285f4;
+}
+
+.toolbar-button.primary:hover {
+  background-color: #2a75f3;
+}
+
+.toolbar-button.warning {
+  background-color: #f8f9fa;
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.toolbar-button.warning:hover {
+  background-color: #fdf1f0;
+}
+
+/* ========== 主内容容器 ========== */
+.container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative; /* 确保子元素的定位正确 */
+}
+
+/* ========== 侧边栏样式 ========== */
+.sidebar {
+  width: 240px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-right: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar h3 {
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+  font-weight: 600;
+}
+
+.sidebar h3:first-child {
+  margin-top: 0;
+}
+
+/* ========== 节点模板样式 ========== */
+.node-template {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s;
+  font-size: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.node-template:hover {
+  background-color: #f1f3f5;
+  border-color: #ced4da;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* 节点模板图标容器 */
+.template-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* 为模板图标应用与节点相同的颜色 */
+.node-start .template-icon {
+  background-color: #27ae60;
+}
+.node-end .template-icon {
+  background-color: #e74c3c;
+}
+.node-http .template-icon {
+  background-color: #3498db;
+}
+.node-sql .template-icon {
+  background-color: #f39c12;
+}
+.node-redis .template-icon {
+  background-color: #9b59b6;
+}
+.node-switch .template-icon {
+  background-color: #1abc9c;
+}
+.loop-node .template-icon {
+  background-color: #3498db;
+}
+.node-script .template-icon {
+  background-color: #34495e;
+}
+.node-variable .template-icon {
+  background-color: #f1c40f;
+}
+.node-llm .template-icon {
+  background-color: #8a2be2; /* 紫色 */
+}
+
+/* 调整节点模板内的文本 */
+.node-template span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== 工作流区域样式 ========== */
+.workflow-area {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: #f0f0f0;
+  min-width: 0; /* 确保区域可以被压缩 */
+  overflow: hidden; /* 防止内容溢出 */
+}
+
+/* ========== ReactFlow 样式定制 ========== */
+/* 修改画布背景色 */
+.react-flow__renderer {
+  background-color: #f0f0f0;
+}
+
+/* 设置ReactFlow容器的背景为横纵相间的点 */
+.alternate-dots-flow .react-flow__pane {
+  background-color: #f0f0f0;
+  background-image: radial-gradient(#c0c0c0 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* 隐藏ReactFlow默认的背景组件 */
+.react-flow__background {
+  display: none;
+}
+
+/* 确保ReactFlow正确填充可用空间 */
+.react-flow {
+  width: 100%;
+  height: 100%;
+}
+
+/* 优化节点拖拽的视觉效果 */
+.react-flow__node.dragging {
+  z-index: 1000 !important;
+}
+
+/* 确保ReactFlow控件在可调整面板上方显示 */
+.react-flow__controls {
+  z-index: 15 !important;
+}
+
+/* 提高调整面板的层级，确保在其他元素之上 */
+.resizable-properties-panel {
+  z-index: 100;
+}
+
+/* ========== 属性面板样式 ========== */
+/* 移除旧的属性面板样式 */
+.properties-panel {
+  display: none; /* 完全隐藏旧面板 */
+}
+
+/* 确保工作流区域中的指示器不受面板调整影响 */
+.simple-zoom-indicator {
+  z-index: 15 !important;
+}
+
+/* ========== 自定义节点样式 ========== */
+.custom-node {
+  width: 220px;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  z-index: 10;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.custom-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 节点标题栏 */
+.node-header {
+  height: 34px;
+  min-height: 34px;
+  margin: 0;
+  padding: 0 10px 0 6px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 11;
+}
+
+.node-title {
+  padding-left: 36px;
+  line-height: 34px;
+  font-size: 14px;
+  height: 34px;
+  flex: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* 节点图标 */
+.node-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+
+/* 确保图标在节点中的可见性 */
+.node-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 节点内容区域 */
+.node-content {
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #555;
+  border-top: 1px solid #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.variable-item {
+  margin-bottom: 4px;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 节点左侧彩色指示条 */
+.custom-node::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  z-index: 2;
+}
+
+/* 节点类型特定的左侧指示条和图标背景颜色 */
+.node-start::after,
+.node-start .node-icon {
+  background-color: #27ae60;
+}
+.node-end::after,
+.node-end .node-icon {
+  background-color: #e74c3c;
+}
+.node-http::after,
+.node-http .node-icon {
+  background-color: #3498db;
+}
+.node-sql::after,
+.node-sql .node-icon {
+  background-color: #f39c12;
+}
+.node-redis::after,
+.node-redis .node-icon {
+  background-color: #9b59b6;
+}
+.node-switch::after,
+.node-switch .node-icon {
+  background-color: #1abc9c;
+}
+.loop-node::after,
+.loop-node .node-icon {
+  background-color: #3498db;
+}
+.node-script::after,
+.node-script .node-icon {
+  background-color: #34495e;
+}
+.node-variable::after,
+.node-variable .node-icon {
+  background-color: #f1c40f;
+}
+.node-llm::after,
+.node-llm .node-icon {
+  background-color: #8a2be2; /* 紫色 */
+}
+
+/* LLM节点样式 */
+.node-llm .node-content {
+  font-size: 12px;
+  color: #555;
+  padding: 8px 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.node-llm .prompt-preview {
+  font-style: italic;
+  color: #666;
+  font-size: 11px;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* ========== 分支节点特殊样式 ========== */
+.switch-cases-container {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 结构化分支行设置 */
+.switch-case-row,
+.switch-default-row {
+  position: relative;
+  padding: 4px 6px;
+  margin: 3px 0;
+  border-radius: 3px;
+  background-color: #f8f9fa;
+  height: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.switch-case-condition,
+.switch-default-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 20px;
+  line-height: 14px;
+}
+
+/* 分支节点连接点样式 */
+.switch-case-row .case-handle,
+.switch-default-row .default-handle {
+  right: 0 !important;
+  top: 50% !important;
+  transform: translate(50%, -50%) !important;
+  position: absolute !important;
+  z-index: 30 !important;
+}
+
+/* 确保分支连接点位置正确 */
+.react-flow__node .react-flow__handle.case-handle,
+.react-flow__node .react-flow__handle.default-handle {
+  right: 0 !important;
+  top: 50% !important;
+  transform: translate(50%, -50%) !important;
+  position: absolute !important;
+}
+
+/* ========== 循环节点样式 ========== */
+/* 循环节点入口点指示器样式 */
+.loop-entry-indicator {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 15 !important;
+  pointer-events: none;
+}
+
+/* 入口点样式 */
+.entry-point-rectangle {
+  width: 36px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: #3498db;
+  border: 2px solid #2980b9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* 入口连接点样式 */
+.entry-handle {
+  width: 9px !important;
+  height: 9px !important;
+  background-color: #4caf50 !important;
+  border: 1px solid white !important;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
+  z-index: 2000 !important;
+  pointer-events: all !important;
+}
+
+/* 出口连接点位置 */
+.entry-handle-out {
+  right: 0px !important;
+}
+
+/* 循环节点主容器 */
+.loop-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 320px !important;
+  box-sizing: border-box;
+  will-change: transform, width, height;
+}
+
+/* 非调整状态和调整大小状态样式 */
+.loop-container:not(.resizing) {
+  transition: none !important;
+}
+
+.loop-container.resizing {
+  opacity: 1 !important;
+  z-index: 20 !important;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* 子流程区域样式 */
+.loop-subflow-area {
+  display: block !important;
+  margin: 0 8px 0px 14px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 6px !important;
+  background-color: #f0f0f0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  will-change: width, height !important;
+  z-index: 5 !important;
+}
+
+/* 循环节点子流程背景点阵样式 */
+.loop-background-dots {
+  background-color: #f0f0f0 !important;
+  background-image: radial-gradient(#c0c0c0 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+}
+
+/* 循环节点底部固定高度的白色区域 */
+.loop-footer-area {
+  height: 20px;
+  width: calc(100% - 22px);
+  background-color: white;
+  margin: 0 10px 0 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+/* 自定义调整大小手柄 */
+.custom-resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #4c9aff;
+  border-top: none;
+  border-left: none;
+  border-bottom-right-radius: 6px;
+  pointer-events: none;
+  z-index: 11 !important;
+  opacity: 1;
+  background-color: transparent;
+  cursor: nwse-resize;
+}
+
+/* ========== 连接点样式 ========== */
+.react-flow__handle {
+  width: 9px !important;
+  height: 9px !important;
+  background-color: #4caf50 !important;
+  border: 1px solid white !important;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
+  z-index: 2000 !important;
+  transition: none !important;
+  will-change: transform;
+}
+
+/* 左侧连接点位置 */
+.react-flow__handle-left {
+  left: 0 !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 右侧连接点位置 */
+.react-flow__handle-right {
+  right: 0 !important;
+  transform: translate(50%, -50%) !important;
+}
+
+/* 连接点悬停效果 */
+.react-flow__handle:hover {
+  background-color: #45a049 !important;
+}
+
+.react-flow__handle-left:hover {
+  transform: scale(1.1) translate(-50%, -50%) !important;
+}
+
+.react-flow__handle-right:hover {
+  transform: scale(1.1) translate(50%, -50%) !important;
+}
+
+/* 调整大小时连接点的过渡效果 */
+.resizing .react-flow__handle {
+  transition: none !important;
+}
+
+/* ========== 连线样式优化 ========== */
+/* 关键的连线可见性修复 */
+.react-flow__edges {
+  z-index: 1000 !important;
+}
+
+.react-flow__edge {
+  z-index: 1000 !important;
+  pointer-events: all !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 修改默认线条样式 */
+.react-flow__edge-path {
+  stroke: #aaaaaa !important; /* 默认灰色 */
+  stroke-width: 1.2px !important;
+  stroke-opacity: 1 !important;
+}
+
+/* 添加选中状态样式 */
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #1a73e8 !important; /* 选中后蓝色 */
+  stroke-width: 2px !important;
+}
+
+/* 确保选中状态的边在其他边上方 */
+.react-flow__edge.selected {
+  z-index: 1001 !important;
+}
+
+/* 确保节点层级低于连线 */
+.react-flow__nodes {
+  z-index: 10 !important;
+}
+
+/* 箭头样式 */
+.react-flow__edge-marker path {
+  transform: scale(0.6);
+}
+
+/* ========== ReactFlow特定功能样式 ========== */
+/* 节点选中状态 */
+.react-flow__node.selected .custom-node {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* 禁用节点边框调整功能 */
+.loop-node .react-flow__node-resizer .react-flow__resize-control:not(.handle) {
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* 调整大小控制器 */
+.react-flow__resize-control.handle {
+  width: 20px !important;
+  height: 20px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  cursor: nwse-resize !important;
+  pointer-events: all !important;
+  z-index: 101 !important;
+}
+
+.react-flow__resize-control {
+  z-index: 101 !important;
+}
+
+/* 循环节点尺寸调整控制 */
+.loop-node .react-flow__resize-control {
+  right: 4px !important;
+  bottom: 4px !important;
+  width: 20px !important;
+  height: 20px !important;
+  pointer-events: all !important;
+  z-index: 101 !important;
+}
+
+.loop-node .react-flow__node-resizer {
+  pointer-events: none !important;
+  opacity: 0 !important;
+  border: none !important;
+}
+
+/* ========== 工作流JSON显示区域 ========== */
+#json-display {
+  height: 160px;
+  min-height: 160px;
+  max-height: 160px;
+  border-top: 1px solid #e9ecef;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+#json-display h3 {
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 14px;
+  color: #495057;
+  background-color: #f8f9fa;
+}
+
+#workflow-json {
+  flex: 1;
+  resize: none;
+  border: none;
+  padding: 10px 15px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* ========== ReactFlow控件样式 ========== */
+.react-flow__minimap {
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.react-flow__controls {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 5;
+  background-color: white;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.workflow-minimap {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  z-index: 5 !important;
+}
+
+.react-flow__controls-button {
+  background-color: white !important;
+  border: none !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  color: #555 !important;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.react-flow__controls-button:hover {
+  background-color: #f5f5f5 !important;
+  color: #3498db !important;
+}
+
+.react-flow__controls-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+/* ========== 缩放指示器样式 ========== */
+.simple-zoom-indicator {
+  position: absolute;
+  left: 44px;
+  bottom: 10px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  z-index: 5;
+  user-select: none;
+  min-width: 40px;
+  text-align: center;
+  transition: opacity 0.2s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.simple-zoom-indicator:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ========== 分支节点特殊样式扩展 ========== */
+/* 分支条件容器 - 采用弹性布局 */
+.switch-cases-container {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 6px 10px 5px 10px !important;
+  font-size: 12px;
+  border-top: 1px solid #f0f0f0;
+  position: relative;
+}
+
+/* 分支条件列表 */
+.switch-cases {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100%;
+  margin-bottom: 0 !important;
+}
+
+/* 所有分支条件行的通用样式 */
+.switch-case-row,
+.switch-default-row {
+  position: relative !important;
+  padding: 10px 12px !important;
+  margin: 3px 0 !important;
+  border-radius: 4px !important;
+  background-color: #f9fafc !important;
+  border: none !important; /* 移除边框 */
+  box-shadow: none !important; /* 移除阴影 */
+  min-height: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+/* 默认分支的特殊样式 - 修改边距 */
+.switch-default-row {
+  margin-bottom: 12px !important;
+}
+
+/* React Flow节点选择器 - 确保高度足够 */
+.react-flow__node.react-flow__node-SWITCH,
+.react-flow__node.react-flow__node-SWITCH.nopan,
+.react-flow__node.react-flow__node-SWITCH.selected,
+.react-flow__node.react-flow__node-SWITCH.selectable {
+  height: auto !important;
+  min-height: 140px !important;
+  padding-bottom: 50px !important;
+  box-sizing: border-box !important;
+}
+
+/* 自定义分支节点容器 */
+.custom-node.node-switch {
+  position: relative !important;
+  height: 100% !important;
+  padding-bottom: 50px !important;
+  min-height: 120px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 常规分支条件行 */
+.switch-case-row,
+.switch-default-row {
+  position: relative !important;
+  padding: 10px 12px !important;
+  margin: 3px 0 !important;
+  border-radius: 4px !important;
+  background-color: #f9fafc !important;
+  border: 1px solid #dde2e6 !important;
+  min-height: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+/* 分支条件文本 */
+.switch-case-condition,
+.switch-default-label {
+  flex: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding: 2px 0 !important;
+  font-size: 12px !important;
+}
+
+/* "增加条件"按钮样式 - 向左移动3px */
+.switch-add-button-float {
+  /* 尺寸 */
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+
+  /* 样式 */
+  border-radius: 50% !important;
+  background-color: #1abc9c !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+
+  /* 内容居中 */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  /* 定位 - 向左移动3px */
+  position: absolute !important;
+  right: 18px !important; /* 从15px增加到18px，向左移动3px */
+  bottom: 15px !important;
+  z-index: 100 !important;
+
+  /* 其他属性 */
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  transform: none !important;
+  overflow: visible !important;
+
+  /* 文字样式 - 增强"+"符号的可见性 */
+  font-size: 24px !important;
+  font-weight: bold !important;
+  line-height: 24px !important;
+  text-align: center !important;
+}
+
+/* 添加伪元素，使"+"符号更清晰 */
+.switch-add-button-float:after {
+  content: "+" !important;
+  color: white !important;
+  font-size: 20px !important; /* 稍微减小字体大小 */
+  font-weight: bold !important;
+  position: absolute !important;
+  top: 45% !important; /* 向上微调 */
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
+  line-height: 18px !important; /* 添加行高控制 */
+  padding-bottom: 2px !important; /* 底部微调 */
+}
+
+/* 增加条件按钮悬停效果 */
+.switch-add-button-float:hover {
+  background-color: #16a085 !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-2px) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* 删除分支按钮样式 - 红色圆圈里面是一个白色的减号 - 更小的尺寸 */
+.delete-case-button {
+  /* 尺寸 - 从22px减小到18px */
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+
+  /* 样式 */
+  border-radius: 50% !important;
+  background-color: #e74c3c !important; /* 红色背景 */
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+
+  /* 定位 */
+  position: relative !important;
+  margin-left: 8px !important;
+
+  /* 其他属性 */
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+/* 添加白色减号 - 调整尺寸 */
+.delete-case-button::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 10px !important; /* 从12px减小到10px */
+  height: 2px !important;
+  background-color: white !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.3) !important; /* 添加细微阴影使减号更清晰 */
+}
+
+/* 鼠标悬停效果 */
+.delete-case-button:hover {
+  background-color: #c0392b !important; /* 深红色 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  transform: scale(1.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* 动态高度调整 - 处理增加条件的情况 */
+/* 检测到多个案例时增加节点高度 */
+.switch-cases-container:has(.switch-case-row:nth-child(3)) ~ .react-flow__node {
+  min-height: 160px !important;
+}
+
+.switch-cases-container:has(.switch-case-row:nth-child(4)) ~ .react-flow__node {
+  min-height: 190px !important;
+}
+
+.switch-cases-container:has(.switch-case-row:nth-child(5)) ~ .react-flow__node {
+  min-height: 220px !important;
+}
+
+/* 确保节点选中状态下维持样式 */
+.react-flow__node.selected .custom-node.node-switch,
+.react-flow__node.nopan .custom-node.node-switch,
+.react-flow__node.selectable .custom-node.node-switch {
+  padding-bottom: 50px !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 1280px) {
+  .react-flow__node.react-flow__node-SWITCH,
+  .react-flow__node.react-flow__node-SWITCH.nopan,
+  .react-flow__node.react-flow__node-SWITCH.selectable,
+  .react-flow__node.react-flow__node-SWITCH.selected {
+    padding-bottom: 40px !important;
+    min-height: 130px !important;
+  }
+
+  .custom-node.node-switch {
+    padding-bottom: 40px !important;
+    min-height: 110px !important;
+  }
+
+  /* 响应式下增加条件按钮 */
+  .switch-add-button-float {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    min-height: 26px !important;
+    max-width: 26px !important;
+    max-height: 26px !important;
+    right: 16px !important; /* 从12px改为16px，保持相对位置 */
+    bottom: 10px !important;
+  }
+
+  .switch-add-button-float:after {
+    font-size: 20px !important;
+  }
+
+  /* 响应式下删除分支按钮 */
+  .delete-case-button {
+    width: 16px !important; /* 从20px减小到16px */
+    height: 16px !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+  }
+
+  .delete-case-button::before {
+    width: 8px !important; /* 从10px减小到8px */
+  }
+
+  .switch-default-row {
+    margin-bottom: 12px !important;
+  }
+}
+
+/* 检查是否有特定的选择器定义了边框 */
+.react-flow__node .switch-case-row,
+.react-flow__node .switch-default-row,
+.node-switch .switch-case-row,
+.node-switch .switch-default-row,
+.custom-node .switch-case-row,
+.custom-node .switch-default-row {
+  border: none !important;
+  box-shadow: none !important;
+}

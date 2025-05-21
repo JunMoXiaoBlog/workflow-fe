@@ -1,0 +1,125 @@
+/* kv-table.css - 为KVTableField组件提供样式 */
+
+/* 表格整体样式 */
+.kv-table {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+  margin-bottom: 16px !important;
+}
+
+/* 表头样式 */
+.kv-table .ui.table thead th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px !important;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* 表格行样式 */
+.kv-table .ui.table tr td {
+  padding: 8px 10px !important;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 偶数行背景色 */
+.kv-table .ui.table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* 表格行悬浮效果 */
+.kv-table .ui.table tr:hover {
+  background-color: #f0f7ff !important;
+}
+
+/* 禁用行样式 */
+.kv-table .disabled-row {
+  background-color: #f8f8f8 !important;
+  color: #888;
+}
+
+/* 禁用行输入框样式 */
+.kv-table .disabled-input input {
+  color: #888 !important;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* 透明输入框样式 */
+.kv-table .ui.transparent.input {
+  width: 100%;
+}
+
+/* 输入框聚焦时的样式 */
+.kv-table .ui.transparent.input > input:focus {
+  background-color: #f0f7ff;
+  border-radius: 3px;
+}
+
+/* 删除按钮样式 */
+.kv-table .ui.button.tiny {
+  padding: 5px !important;
+  margin: 0 !important;
+}
+
+/* 确保垃圾桶图标居中 */
+.kv-table .ui.button.tiny .icon {
+  margin: 0 !important;
+}
+
+/* 字段标题样式 */
+.kv-table-field .field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+/* 确保启用复选框垂直居中 */
+.kv-table .ui.checkbox {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 添加特定的复选框单元格类 */
+.kv-table .checkbox-cell {
+  vertical-align: middle !important;
+  text-align: center !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+/* 添加特定的居中复选框类 */
+.kv-table .centered-checkbox {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 8px 0 !important;
+}
+
+/* 添加响应式样式，确保在小屏幕上仍然可用 */
+@media (max-width: 768px) {
+  .kv-table .ui.table thead th {
+    padding: 8px 6px !important;
+    font-size: 12px;
+  }
+
+  .kv-table .ui.table tr td {
+    padding: 6px !important;
+  }
+
+  .kv-table .ui.button.tiny {
+    padding: 4px !important;
+  }
+}

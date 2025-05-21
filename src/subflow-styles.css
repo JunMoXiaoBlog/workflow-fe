@@ -1,0 +1,158 @@
+/* 子流程相关样式 - 保持原有外观 */
+
+/* 循环节点入口点指示器 */
+.loop-entry-indicator {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  pointer-events: none; /* 确保基本区域不干扰用户操作 */
+}
+
+/* 入口点样式 */
+.entry-point-rectangle {
+  width: 36px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: #3498db; /* 蓝色背景 */
+  border: 2px solid #2980b9; /* 深蓝色边框 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative; /* 为连接点定位提供参考 */
+}
+
+/* 入口连接点样式 */
+.entry-handle {
+  width: 9px !important;
+  height: 9px !important;
+  background-color: #4caf50 !important;
+  border: 1px solid white !important;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
+  z-index: 150 !important;
+  pointer-events: all !important; /* 确保连接点可以接收鼠标事件 */
+}
+
+/* 出口连接点位置 */
+.entry-handle-out {
+  right: 0px !important;
+}
+
+/* 确保子流程区域背景样式 */
+.loop-background-dots {
+  background-color: #f0f0f0 !important;
+  background-image: radial-gradient(#c0c0c0 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 0 !important;
+}
+
+/* 子流程节点容器 */
+.loop-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: auto !important;
+  min-width: 320px !important;
+  box-sizing: border-box;
+  will-change: transform, width, height;
+}
+
+/* 非调整状态时，启用平滑过渡 */
+.loop-container:not(.resizing) {
+  transition: none !important;
+}
+
+/* 调整大小状态时的样式 */
+.loop-container.resizing {
+  opacity: 1 !important;
+  z-index: 10;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* 子流程区域样式 */
+.loop-subflow-area {
+  display: block !important;
+  margin: 0 8px 0px 14px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 6px !important;
+  background-color: #f0f0f0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  will-change: width, height !important;
+}
+
+/* 子流程区域不处于调整大小状态时的过渡 */
+.loop-container:not(.resizing) .loop-subflow-area {
+  transition: none !important;
+}
+
+/* 自定义调整大小手柄 */
+.custom-resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #4c9aff;
+  border-top: none;
+  border-left: none;
+  border-bottom-right-radius: 6px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 1;
+  background-color: transparent;
+  cursor: nwse-resize;
+}
+
+/* 确保子流程内部的节点有正确的层级 */
+.react-flow__node-LOOP .react-flow__node {
+  z-index: 5;
+}
+
+/* 确保子流程节点连接点在正确的层级 */
+.react-flow__node-LOOP .react-flow__handle {
+  z-index: 150;
+}
+
+/* 使光标在可拖放区域显示为可放置状态 */
+.loop-subflow-area:empty {
+  cursor: default;
+}
+
+/* 拖拽悬停时的效果 */
+.loop-subflow-area.react-flow__drop-target {
+  box-shadow: 0 0 0 2px #4c9aff;
+}
+
+/* 调整右侧调整手柄 */
+.react-flow__resize-control.handle {
+  width: 20px !important;
+  height: 20px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  cursor: nwse-resize !important;
+  pointer-events: all !important;
+  z-index: 101 !important;
+}
+
+/* 确保 NodeResizeControl 的 z-index 高于节点内部元素 */
+.react-flow__resize-control {
+  z-index: 101 !important;
+}
+
+/* 禁用节点边框调整功能 */
+.loop-node .react-flow__node-resizer .react-flow__resize-control:not(.handle) {
+  pointer-events: none !important;
+  opacity: 0 !important;
+}

@@ -1,0 +1,93 @@
+/* resizable-panel.css - 简化版，确保拖拽正常工作 */
+
+/* 可调整大小的属性面板容器 */
+.resizable-properties-panel {
+  position: relative;
+  background-color: #ffffff;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #e0e0e0;
+  min-width: 400px;
+  max-width: 800px;
+  z-index: 100;
+}
+
+/* 调整大小过程中样式 */
+.resizable-properties-panel.resizing {
+  user-select: none;
+}
+
+/* 拖拽手柄 */
+.resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  cursor: col-resize;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 拖拽手柄中的线条 */
+.handle-line {
+  width: 2px;
+  height: 50px;
+  background-color: #aaa;
+  border-radius: 1px;
+}
+
+/* 拖拽手柄悬停效果 */
+.resize-handle:hover .handle-line {
+  background-color: #4b9fd5;
+}
+
+/* 面板标题 */
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eaeaea;
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
+  z-index: 10;
+}
+
+.panel-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* 面板内容区域 */
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 15px 20px;
+}
+
+/* 自定义滚动条 */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

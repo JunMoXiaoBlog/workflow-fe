@@ -1,0 +1,125 @@
+/* tab-properties.css - 完整文件 */
+
+/* 属性面板Tab样式 */
+.tab-properties-panel {
+  padding: 0;
+  width: 100%;
+}
+
+.tab-properties-panel .ui.header {
+  margin: 0 0 12px 0;
+  padding: 0 10px;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+/* Tab菜单样式 */
+.tab-properties-panel .ui.secondary.pointing.menu {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-properties-panel .ui.secondary.pointing.menu .item {
+  padding: 10px 16px;
+  margin: 0 4px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #606770;
+  border-bottom-width: 3px;
+  transition: all 0.2s ease;
+}
+
+.tab-properties-panel .ui.secondary.pointing.menu .active.item {
+  border-color: #4285f4;
+  color: #4285f4;
+  font-weight: 600;
+}
+
+.tab-properties-panel .ui.secondary.pointing.menu .item:hover {
+  background-color: #f5f5f5;
+  border-color: #ebebeb;
+}
+
+.tab-properties-panel .ui.secondary.pointing.menu .active.item:hover {
+  border-color: #1a73e8;
+  background-color: #f5f8ff;
+}
+
+/* Tab面板样式 */
+.tab-properties-panel .ui.tab.segment {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-properties-panel .ui.tab.pane {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* 表单字段样式调整 */
+.tab-properties-panel .form-group {
+  margin-bottom: 16px;
+}
+
+.tab-properties-panel .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+  font-size: 13px;
+}
+
+/* Semantic UI特定样式覆盖 */
+.tab-properties-panel .ui.form .field {
+  margin-bottom: 16px;
+}
+
+.tab-properties-panel .ui.form .field > label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #333;
+}
+
+/* 调试结果区域 */
+.tab-properties-panel textarea[disabled] {
+  background-color: #f9fafb;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+/* 配置异常处理面板中的字段间距 */
+.tab-properties-panel .tab.pane:nth-child(2) .field {
+  margin-bottom: 20px;
+}
+
+/* 优化调试面板样式 */
+.tab-properties-panel .tab.pane:nth-child(3) .ui.negative.message {
+  margin-bottom: 16px;
+}
+
+/* LLM节点特殊字段样式 */
+.tab-properties-panel textarea[name="systemPrompt"],
+.tab-properties-panel textarea[name="userPrompt"] {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  color: #333;
+}
+
+/* API密钥输入框样式 */
+.tab-properties-panel input[name="apiKey"] {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+/* 增加LLM节点调试面板中的调试结果格式化 */
+.tab-properties-panel .tab.pane:nth-child(3) textarea[name="debugResult"] {
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}

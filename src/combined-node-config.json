@@ -1,0 +1,3999 @@
+{
+  "START": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "START",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "description": {
+          "type": "string",
+          "title": "节点描述",
+          "description": "流程的起始点，描述该流程的主要功能和用途"
+        },
+        "tags": {
+          "type": "string",
+          "title": "流程标签",
+          "description": "为流程添加标签，多个标签用逗号分隔，便于全局搜索"
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "RETRY"],
+          "enumNames": ["终止流程", "忽略错误", "重试执行"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "节点执行的最长等待时间"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true,
+          "description": "每次重试时间间隔逐渐增加"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "dependencies": {
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["RETRY"] }
+              },
+              "required": ["maxRetries", "retryInterval"]
+            },
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["FAIL", "IGNORE"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "description": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "请输入流程描述..."
+      },
+      "tags": {
+        "ui:placeholder": "例如: 库存管理,订单处理,自动化",
+        "ui:help": "添加标签，便于对流程进行分类和搜索"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"处理失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"initialData\": {\n    \"userId\": 12345,\n    \"requestId\": \"req-123\"\n  },\n  \"environment\": \"dev\"\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "开始节点",
+      "description": "流程的起始点",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": ["nodeType", "nodeId", "description", "tags"]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "END": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "END",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "enableProcessScript": {
+          "type": "boolean",
+          "title": "启用返回处理脚本",
+          "default": false
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE"],
+          "enumNames": ["终止流程", "忽略错误"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "节点执行的最长等待时间"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数",
+          "description": "用于测试结束节点的输入参数（JSON格式）"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "dependencies": {
+        "enableProcessScript": {
+          "oneOf": [
+            {
+              "properties": {
+                "enableProcessScript": { "enum": [true] },
+                "scriptLanguage": {
+                  "type": "string",
+                  "title": "脚本语言",
+                  "enum": ["javascript", "groovy", "python"],
+                  "default": "javascript"
+                },
+                "processScript": {
+                  "type": "string",
+                  "title": "处理脚本",
+                  "description": "结束节点的处理脚本，用于生成返回结果",
+                  "default": "/**\n * 结束节点处理函数\n * @param {Object} input - 输入数据，包含流程上下文和所有变量\n * @param {Object} context - 执行上下文，包含节点信息和环境变量\n * @returns {Object} - 返回值对象，包含 statusCode, headers 和 body\n */\nfunction processEnd(input, context) {\n  // 访问流程变量\n  const { variables, payload } = input;\n  \n  // 默认成功返回\n  return {\n    statusCode: 200,\n    headers: { \"Content-Type\": \"application/json\" },\n    body: JSON.stringify({\n      status: \"success\",\n      data: payload\n    })\n  };\n}"
+                }
+              },
+              "required": ["scriptLanguage", "processScript"]
+            },
+            {
+              "properties": {
+                "enableProcessScript": { "enum": [false] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "enableProcessScript": {
+        "ui:widget": "checkbox"
+      },
+      "scriptLanguage": {
+        "ui:widget": "select"
+      },
+      "processScript": {
+        "ui:field": "CodeEditorField",
+        "ui:options": {
+          "height": "300px"
+        }
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"执行失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"payload\": {\n    \"userId\": 123,\n    \"data\": {\n      \"status\": \"completed\",\n      \"results\": [1, 2, 3]\n    }\n  },\n  \"variables\": {\n    \"processId\": \"ABC-123\"\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "结束节点",
+      "description": "流程的终止点",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "enableProcessScript",
+            "scriptLanguage",
+            "processScript"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": ["errorStrategy", "timeout", "fallbackResponse"]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "HTTP": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "HTTP",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "method": {
+          "type": "string",
+          "title": "请求方法",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "PATCH",
+            "HEAD",
+            "OPTIONS",
+            "TRACE"
+          ],
+          "default": "GET"
+        },
+        "url": {
+          "type": "string",
+          "title": "URL",
+          "description": "请求的目标URL"
+        },
+        "headers": {
+          "type": "object",
+          "title": "HTTP请求头",
+          "description": "添加HTTP请求头，如Content-Type、Authorization等",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "params": {
+          "type": "object",
+          "title": "URL查询参数",
+          "description": "添加URL查询参数(Query String)，将会附加到URL中(?key=value&key2=value2)",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "contentType": {
+          "type": "string",
+          "title": "请求体格式",
+          "enum": [
+            "none",
+            "form-data",
+            "x-www-form-urlencoded",
+            "json",
+            "text",
+            "javascript",
+            "html",
+            "xml",
+            "binary"
+          ],
+          "enumNames": [
+            "none",
+            "form-data",
+            "x-www-form-urlencoded",
+            "json",
+            "text",
+            "javascript",
+            "html",
+            "xml",
+            "binary"
+          ],
+          "default": "none"
+        },
+        "enableAuth": {
+          "type": "boolean",
+          "title": "启用认证",
+          "default": false
+        },
+        "enableAdvanced": {
+          "type": "boolean",
+          "title": "启用高级选项",
+          "default": false
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "RETRY"],
+          "enumNames": ["终止流程", "忽略错误", "重试执行"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "节点执行的最长等待时间"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true,
+          "description": "每次重试时间间隔逐渐增加"
+        },
+        "retryStatusCodes": {
+          "type": "string",
+          "title": "重试状态码",
+          "description": "遇到这些状态码时进行重试",
+          "default": "408,429,500,502,503,504"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "required": ["url", "method"],
+      "dependencies": {
+        "enableAuth": {
+          "oneOf": [
+            {
+              "properties": {
+                "enableAuth": { "enum": [true] },
+                "authType": {
+                  "type": "string",
+                  "title": "认证类型",
+                  "enum": [
+                    "no_auth",
+                    "api_key",
+                    "bearer_token",
+                    "basic_auth",
+                    "oauth2",
+                    "jwt_bearer"
+                  ],
+                  "enumNames": [
+                    "No Auth",
+                    "API Key",
+                    "Bearer Token",
+                    "Basic Auth",
+                    "OAuth 2.0",
+                    "JWT Bearer"
+                  ],
+                  "default": "no_auth"
+                }
+              },
+              "required": ["authType"],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": { "authType": { "enum": ["basic_auth"] } }
+                  },
+                  "then": {
+                    "properties": {
+                      "username": {
+                        "type": "string",
+                        "title": "用户名",
+                        "description": "Basic认证用户名"
+                      },
+                      "password": {
+                        "type": "string",
+                        "title": "密码",
+                        "description": "Basic认证密码"
+                      }
+                    },
+                    "required": ["username", "password"]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "authType": { "enum": ["bearer_token", "jwt_bearer"] }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "bearerToken": {
+                        "type": "string",
+                        "title": "Token",
+                        "description": "认证令牌"
+                      }
+                    },
+                    "required": ["bearerToken"]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "authType": { "enum": ["api_key"] } }
+                  },
+                  "then": {
+                    "properties": {
+                      "apiKeyName": {
+                        "type": "string",
+                        "title": "API Key名称",
+                        "description": "API Key认证的键名"
+                      },
+                      "apiKeyValue": {
+                        "type": "string",
+                        "title": "API Key值",
+                        "description": "API Key认证的键值"
+                      },
+                      "apiKeyLocation": {
+                        "type": "string",
+                        "title": "API Key位置",
+                        "enum": ["header", "query"],
+                        "enumNames": ["Header", "Query Parameter"],
+                        "default": "header",
+                        "description": "API Key添加位置"
+                      }
+                    },
+                    "required": ["apiKeyName", "apiKeyValue", "apiKeyLocation"]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "authType": { "enum": ["oauth2"] } }
+                  },
+                  "then": {
+                    "properties": {
+                      "oauth2Token": {
+                        "type": "string",
+                        "title": "Access Token",
+                        "description": "OAuth 2.0访问令牌"
+                      },
+                      "oauth2TokenType": {
+                        "type": "string",
+                        "title": "Token类型",
+                        "enum": ["Bearer", "MAC"],
+                        "default": "Bearer",
+                        "description": "令牌类型"
+                      }
+                    },
+                    "required": ["oauth2Token"]
+                  }
+                }
+              ]
+            },
+            {
+              "properties": {
+                "enableAuth": { "enum": [false] }
+              }
+            }
+          ]
+        },
+        "enableAdvanced": {
+          "oneOf": [
+            {
+              "properties": {
+                "enableAdvanced": { "enum": [true] },
+                "followRedirects": {
+                  "type": "boolean",
+                  "title": "跟随重定向",
+                  "default": true,
+                  "description": "自动跟随3xx重定向响应"
+                },
+                "validateSSL": {
+                  "type": "boolean",
+                  "title": "验证SSL证书",
+                  "default": true,
+                  "description": "验证服务器SSL证书"
+                },
+                "responseType": {
+                  "type": "string",
+                  "title": "响应格式",
+                  "enum": ["json", "text", "arraybuffer", "blob"],
+                  "default": "json",
+                  "description": "预期的响应数据格式"
+                }
+              },
+              "required": ["followRedirects", "validateSSL", "responseType"]
+            },
+            {
+              "properties": {
+                "enableAdvanced": { "enum": [false] }
+              }
+            }
+          ]
+        },
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["RETRY"] }
+              },
+              "required": ["maxRetries", "retryInterval", "retryStatusCodes"]
+            },
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["FAIL", "IGNORE"] }
+              }
+            }
+          ]
+        },
+        "method": {
+          "oneOf": [
+            {
+              "properties": {
+                "method": { "enum": ["POST", "PUT", "PATCH"] }
+              }
+            },
+            {
+              "properties": {
+                "method": {
+                  "enum": ["GET", "DELETE", "HEAD", "OPTIONS", "TRACE"]
+                },
+                "contentType": { "enum": ["none"] }
+              }
+            }
+          ]
+        },
+        "contentType": {
+          "oneOf": [
+            {
+              "properties": {
+                "contentType": { "enum": ["none"] }
+              }
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["form-data"] },
+                "formDataBody": {
+                  "type": "object",
+                  "title": "Form Data表单字段",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["formDataBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["x-www-form-urlencoded"] },
+                "urlEncodedBody": {
+                  "type": "object",
+                  "title": "URL编码表单字段",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["urlEncodedBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["json"] },
+                "jsonBody": {
+                  "type": "string",
+                  "title": "JSON数据",
+                  "description": "请输入有效的JSON数据"
+                }
+              },
+              "required": ["jsonBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["text"] },
+                "textBody": {
+                  "type": "string",
+                  "title": "文本内容",
+                  "description": "请输入纯文本内容"
+                }
+              },
+              "required": ["textBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["javascript"] },
+                "jsBody": {
+                  "type": "string",
+                  "title": "JavaScript代码",
+                  "description": "请输入JavaScript代码"
+                }
+              },
+              "required": ["jsBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["html"] },
+                "htmlBody": {
+                  "type": "string",
+                  "title": "HTML代码",
+                  "description": "请输入HTML标记语言"
+                }
+              },
+              "required": ["htmlBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["xml"] },
+                "xmlBody": {
+                  "type": "string",
+                  "title": "XML数据",
+                  "description": "请输入XML标记语言"
+                }
+              },
+              "required": ["xmlBody"]
+            },
+            {
+              "properties": {
+                "contentType": { "enum": ["binary"] },
+                "binaryBody": {
+                  "type": "string",
+                  "title": "二进制文件",
+                  "description": "选择要上传的文件",
+                  "format": "binary"
+                }
+              },
+              "required": ["binaryBody"]
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "ui:order": [
+        "nodeType",
+        "nodeId",
+        "method",
+        "url",
+        "headers",
+        "params",
+        "contentType",
+        "formDataBody",
+        "urlEncodedBody",
+        "jsonBody",
+        "textBody",
+        "jsBody",
+        "htmlBody",
+        "xmlBody",
+        "binaryBody",
+        "enableAuth",
+        "authType",
+        "username",
+        "password",
+        "bearerToken",
+        "apiKeyName",
+        "apiKeyValue",
+        "apiKeyLocation",
+        "oauth2Token",
+        "oauth2TokenType",
+        "enableAdvanced",
+        "followRedirects",
+        "validateSSL",
+        "responseType",
+        "*"
+      ],
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "method": {
+        "ui:widget": "select"
+      },
+      "url": {
+        "ui:placeholder": "https://api.example.com/v1/resource",
+        "ui:options": {
+          "inputType": "url"
+        }
+      },
+      "headers": {
+        "ui:field": "KVTableField",
+        "ui:options": {
+          "keyPlaceholder": "Content-Type",
+          "valuePlaceholder": "application/json",
+          "label": "HTTP请求头"
+        }
+      },
+      "params": {
+        "ui:field": "KVTableField",
+        "ui:options": {
+          "keyPlaceholder": "param1",
+          "valuePlaceholder": "value1",
+          "label": "URL查询参数"
+        }
+      },
+      "contentType": {
+        "ui:widget": "select",
+        "ui:help": "选择请求体的数据格式"
+      },
+      "formDataBody": {
+        "ui:field": "KVTableField",
+        "ui:options": {
+          "keyPlaceholder": "name",
+          "valuePlaceholder": "value",
+          "label": "表单字段"
+        }
+      },
+      "urlEncodedBody": {
+        "ui:field": "KVTableField",
+        "ui:options": {
+          "keyPlaceholder": "name",
+          "valuePlaceholder": "value",
+          "label": "表单字段"
+        }
+      },
+      "jsonBody": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 8
+        },
+        "ui:placeholder": "请输入有效的JSON数据，例如: {\n  \"key\": \"value\"\n}"
+      },
+      "textBody": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 8
+        },
+        "ui:placeholder": "请输入纯文本内容"
+      },
+      "jsBody": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 8
+        },
+        "ui:placeholder": "请输入JavaScript代码"
+      },
+      "htmlBody": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 8
+        },
+        "ui:placeholder": "请输入HTML代码"
+      },
+      "xmlBody": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 8
+        },
+        "ui:placeholder": "请输入XML代码"
+      },
+      "binaryBody": {
+        "ui:widget": "file",
+        "ui:options": {
+          "accept": "*/*"
+        },
+        "ui:help": "选择要上传的文件"
+      },
+      "enableAuth": {
+        "ui:widget": "checkbox"
+      },
+      "authType": {
+        "ui:widget": "select"
+      },
+      "username": {
+        "ui:placeholder": "请输入用户名"
+      },
+      "password": {
+        "ui:widget": "password",
+        "ui:placeholder": "请输入密码"
+      },
+      "bearerToken": {
+        "ui:placeholder": "请输入Token"
+      },
+      "apiKeyName": {
+        "ui:placeholder": "请输入API Key名称"
+      },
+      "apiKeyValue": {
+        "ui:placeholder": "请输入API Key值"
+      },
+      "apiKeyLocation": {
+        "ui:widget": "select"
+      },
+      "oauth2Token": {
+        "ui:placeholder": "请输入OAuth 2.0访问令牌"
+      },
+      "oauth2TokenType": {
+        "ui:widget": "select"
+      },
+      "enableAdvanced": {
+        "ui:widget": "checkbox"
+      },
+      "followRedirects": {
+        "ui:widget": "checkbox"
+      },
+      "validateSSL": {
+        "ui:widget": "checkbox"
+      },
+      "responseType": {
+        "ui:widget": "select"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "retryStatusCodes": {
+        "ui:placeholder": "例如: 408,429,500,502,503,504"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"请求失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"mockStatusCode\": 200,\n  \"mockResponse\": {\n    \"data\": \"示例响应数据\",\n    \"status\": \"success\"\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "HTTP 请求",
+      "description": "发送HTTP请求到外部API",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "请求配置",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "method",
+            "url",
+            "headers",
+            "params",
+            "contentType",
+            "formDataBody",
+            "urlEncodedBody",
+            "jsonBody",
+            "textBody",
+            "jsBody",
+            "htmlBody",
+            "xmlBody",
+            "binaryBody",
+            "enableAuth",
+            "authType",
+            "username",
+            "password",
+            "bearerToken",
+            "apiKeyName",
+            "apiKeyValue",
+            "apiKeyLocation",
+            "oauth2Token",
+            "oauth2TokenType",
+            "enableAdvanced",
+            "followRedirects",
+            "validateSSL",
+            "responseType"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "retryStatusCodes",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "SQL": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "SQL",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "databaseType": {
+          "type": "string",
+          "title": "数据库类型",
+          "enum": ["MySQL", "PostgreSQL", "Oracle", "SQLServer", "SQLite"],
+          "default": "MySQL"
+        },
+        "hostname": {
+          "type": "string",
+          "title": "主机地址",
+          "description": "数据库服务器地址或IP"
+        },
+        "port": {
+          "type": "integer",
+          "title": "端口",
+          "default": 3306
+        },
+        "database": {
+          "type": "string",
+          "title": "数据库名",
+          "description": "要连接的数据库名称"
+        },
+        "username": {
+          "type": "string",
+          "title": "用户名"
+        },
+        "password": {
+          "type": "string",
+          "title": "密码"
+        },
+        "operation": {
+          "type": "string",
+          "title": "操作类型",
+          "enum": ["QUERY", "UPDATE", "INSERT", "DELETE"],
+          "default": "QUERY"
+        },
+        "sql": {
+          "type": "string",
+          "title": "SQL语句",
+          "description": "支持#{变量}参数化，例如: SELECT * FROM users WHERE id = #{userId}"
+        },
+        "maxRows": {
+          "type": "integer",
+          "title": "最大行数",
+          "description": "限制查询返回的最大记录数，系统会自动添加相应的LIMIT子句",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 200
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "RETRY"],
+          "enumNames": ["终止流程", "忽略错误", "重试执行"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "节点执行的最长等待时间"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true,
+          "description": "每次重试时间间隔逐渐增加"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "databaseType",
+        "hostname",
+        "port",
+        "database",
+        "username",
+        "password",
+        "operation",
+        "sql"
+      ],
+      "dependencies": {
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["RETRY"] }
+              },
+              "required": ["maxRetries", "retryInterval"]
+            },
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["FAIL", "IGNORE"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "databaseType": {
+        "ui:widget": "select"
+      },
+      "hostname": {
+        "ui:placeholder": "例如: localhost 或 db.example.com"
+      },
+      "port": {
+        "ui:widget": "updown"
+      },
+      "database": {
+        "ui:placeholder": "例如: my_database"
+      },
+      "username": {
+        "ui:placeholder": "例如: dbuser"
+      },
+      "password": {
+        "ui:widget": "password",
+        "ui:placeholder": "请输入数据库密码"
+      },
+      "operation": {
+        "ui:widget": "select"
+      },
+      "sql": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "SELECT * FROM users WHERE user_id = #{userId} AND status = #{status}",
+        "ui:help": "可使用#{变量}引用流程变量，${}用于动态表名等"
+      },
+      "maxRows": {
+        "ui:widget": "updown"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"查询失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"userId\": 123,\n  \"status\": \"active\",\n  \"mockResult\": [...]\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "SQL 节点",
+      "description": "执行SQL数据库操作",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "databaseType",
+            "hostname",
+            "port",
+            "database",
+            "username",
+            "password",
+            "operation",
+            "sql",
+            "maxRows"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "REDIS": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "REDIS",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "hostname": {
+          "type": "string",
+          "title": "主机地址",
+          "description": "Redis服务器地址",
+          "default": "localhost"
+        },
+        "port": {
+          "type": "integer",
+          "title": "端口",
+          "default": 6379
+        },
+        "password": {
+          "type": "string",
+          "title": "密码",
+          "description": "Redis服务器密码，如不需要可留空"
+        },
+        "database": {
+          "type": "integer",
+          "title": "数据库索引",
+          "description": "Redis数据库索引，默认为0",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 15
+        },
+        "dataType": {
+          "type": "string",
+          "title": "数据类型",
+          "enum": [
+            "STRING",
+            "HASH",
+            "LIST",
+            "SET",
+            "ZSET",
+            "BITMAP",
+            "HYPERLOGLOG",
+            "KEY"
+          ],
+          "enumNames": [
+            "字符串 (String)",
+            "哈希表 (Hash)",
+            "列表 (List)",
+            "集合 (Set)",
+            "有序集合 (Sorted Set)",
+            "位图 (Bitmap)",
+            "基数统计 (HyperLogLog)",
+            "键操作 (Key)"
+          ],
+          "default": "STRING"
+        },
+        "key": {
+          "type": "string",
+          "title": "键名",
+          "description": "操作的键名称，支持#{变量}引用"
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "RETRY"],
+          "enumNames": ["终止流程", "忽略错误", "重试执行"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 5000,
+          "description": "节点执行的最长等待时间"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true,
+          "description": "每次重试时间间隔逐渐增加"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "required": ["hostname", "port", "dataType", "key"],
+
+      "dependencies": {
+        "dataType": {
+          "oneOf": [
+            {
+              "properties": {
+                "dataType": { "enum": ["STRING"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "GET",
+                    "SET",
+                    "MGET",
+                    "MSET",
+                    "SETEX",
+                    "SETNX",
+                    "GETSET",
+                    "APPEND",
+                    "STRLEN"
+                  ],
+                  "enumNames": [
+                    "获取值 (GET)",
+                    "设置值 (SET)",
+                    "批量获取值 (MGET) (谨慎操作)",
+                    "批量设置值 (MSET) (谨慎操作)",
+                    "设置带过期时间的值 (SETEX)",
+                    "不存在才设置 (SETNX)",
+                    "设置并返回旧值 (GETSET) (谨慎操作)",
+                    "追加字符串 (APPEND)",
+                    "获取字符串长度 (STRLEN)"
+                  ],
+                  "default": "GET"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["HASH"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "HGET",
+                    "HSET",
+                    "HMGET",
+                    "HMSET",
+                    "HDEL",
+                    "HLEN",
+                    "HEXISTS",
+                    "HINCRBY",
+                    "HINCRBYFLOAT",
+                    "HKEYS",
+                    "HVALS"
+                  ],
+                  "enumNames": [
+                    "获取哈希字段值 (HGET)",
+                    "设置哈希字段值 (HSET)",
+                    "批量获取哈希字段值 (HMGET)",
+                    "批量设置哈希字段值 (HMSET)",
+                    "删除哈希字段 (HDEL)",
+                    "获取哈希字段数量 (HLEN)",
+                    "判断哈希字段是否存在 (HEXISTS)",
+                    "增加哈希整数字段值 (HINCRBY)",
+                    "增加哈希浮点字段值 (HINCRBYFLOAT)",
+                    "获取所有哈希字段名 (HKEYS) (谨慎操作)",
+                    "获取所有哈希值 (HVALS) (谨慎操作)"
+                  ],
+                  "default": "HGET"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["LIST"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "LPUSH",
+                    "RPUSH",
+                    "LPOP",
+                    "RPOP",
+                    "LRANGE",
+                    "LREM",
+                    "LLEN",
+                    "LINDEX",
+                    "LTRIM",
+                    "LSET"
+                  ],
+                  "enumNames": [
+                    "左侧添加元素 (LPUSH)",
+                    "右侧添加元素 (RPUSH)",
+                    "左侧弹出元素 (LPOP)",
+                    "右侧弹出元素 (RPOP)",
+                    "获取列表范围 (LRANGE) (谨慎操作)",
+                    "删除列表元素 (LREM)",
+                    "获取列表长度 (LLEN)",
+                    "获取列表索引值 (LINDEX)",
+                    "裁剪列表 (LTRIM)",
+                    "设置列表索引值 (LSET)"
+                  ],
+                  "default": "LPUSH"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["SET"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "SADD",
+                    "SREM",
+                    "SMEMBERS",
+                    "SCARD",
+                    "SISMEMBER",
+                    "SPOP",
+                    "SRANDMEMBER"
+                  ],
+                  "enumNames": [
+                    "添加集合成员 (SADD)",
+                    "删除集合成员 (SREM)",
+                    "获取所有集合成员 (SMEMBERS) (谨慎操作)",
+                    "获取集合成员数量 (SCARD)",
+                    "判断元素是否在集合中 (SISMEMBER)",
+                    "随机移除集合成员 (SPOP) (谨慎操作)",
+                    "随机获取集合成员 (SRANDMEMBER) (谨慎操作)"
+                  ],
+                  "default": "SADD"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["ZSET"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "ZADD",
+                    "ZREM",
+                    "ZSCORE",
+                    "ZRANGE",
+                    "ZREVRANGE",
+                    "ZRANGEBYSCORE",
+                    "ZREMRANGEBYSCORE",
+                    "ZCARD",
+                    "ZINCRBY"
+                  ],
+                  "enumNames": [
+                    "添加有序集合成员 (ZADD)",
+                    "删除有序集合成员 (ZREM)",
+                    "获取成员分数 (ZSCORE)",
+                    "按索引范围获取成员 (ZRANGE) (谨慎操作)",
+                    "按索引范围反向获取成员 (ZREVRANGE) (谨慎操作)",
+                    "按分数范围获取成员 (ZRANGEBYSCORE) (谨慎操作)",
+                    "按分数范围删除成员 (ZREMRANGEBYSCORE)",
+                    "获取有序集合成员数量 (ZCARD)",
+                    "增加成员分数 (ZINCRBY)"
+                  ],
+                  "default": "ZADD"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["BITMAP"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": ["SETBIT", "GETBIT", "BITCOUNT", "BITOP"],
+                  "enumNames": [
+                    "设置位图的位 (SETBIT)",
+                    "获取位图的位 (GETBIT)",
+                    "统计位图中1的数量 (BITCOUNT)",
+                    "位图操作 (BITOP)"
+                  ],
+                  "default": "GETBIT"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["HYPERLOGLOG"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": ["PFADD", "PFCOUNT", "PFMERGE"],
+                  "enumNames": [
+                    "添加元素 (PFADD)",
+                    "获取基数估算值 (PFCOUNT)",
+                    "合并多个HyperLogLog (PFMERGE)"
+                  ],
+                  "default": "PFADD"
+                }
+              },
+              "required": ["operation"]
+            },
+            {
+              "properties": {
+                "dataType": { "enum": ["KEY"] },
+                "operation": {
+                  "type": "string",
+                  "title": "操作命令",
+                  "enum": [
+                    "DEL",
+                    "UNLINK",
+                    "EXPIRE",
+                    "TTL",
+                    "PERSIST",
+                    "EXISTS",
+                    "TYPE"
+                  ],
+                  "enumNames": [
+                    "删除键 (DEL) (谨慎操作)",
+                    "异步删除键 (UNLINK)",
+                    "设置过期时间 (EXPIRE)",
+                    "获取剩余过期时间 (TTL)",
+                    "移除过期时间 (PERSIST)",
+                    "检查键是否存在 (EXISTS)",
+                    "获取键类型 (TYPE) (谨慎操作)"
+                  ],
+                  "default": "EXISTS"
+                }
+              },
+              "required": ["operation"]
+            }
+          ]
+        },
+        "operation": {
+          "oneOf": [
+            {
+              "properties": {
+                "operation": {
+                  "enum": [
+                    "GET",
+                    "STRLEN",
+                    "LPOP",
+                    "RPOP",
+                    "LLEN",
+                    "SCARD",
+                    "SMEMBERS",
+                    "ZCARD",
+                    "TTL",
+                    "PERSIST",
+                    "EXISTS",
+                    "TYPE",
+                    "GETBIT",
+                    "BITCOUNT",
+                    "PFCOUNT"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SET", "GETSET", "APPEND"]
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "要设置的值，支持#{变量}引用"
+                }
+              },
+              "required": ["value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SETEX"]
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "要设置的值，支持#{变量}引用"
+                },
+                "expireTime": {
+                  "type": "integer",
+                  "title": "过期时间(秒)",
+                  "description": "键的过期时间",
+                  "default": 60,
+                  "minimum": 1
+                }
+              },
+              "required": ["value", "expireTime"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SETNX"]
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "键不存在时要设置的值，支持#{变量}引用"
+                }
+              },
+              "required": ["value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["EXPIRE"]
+                },
+                "expireTime": {
+                  "type": "integer",
+                  "title": "过期时间(秒)",
+                  "description": "键的过期时间",
+                  "default": 60,
+                  "minimum": 1
+                }
+              },
+              "required": ["expireTime"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["MGET"]
+                },
+                "keys": {
+                  "type": "string",
+                  "title": "键列表",
+                  "description": "JSON格式数组，例如: [\"key1\", \"key2\"]"
+                }
+              },
+              "required": ["keys"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["MSET"]
+                },
+                "keyValues": {
+                  "type": "string",
+                  "title": "键值映射",
+                  "description": "JSON格式对象，例如: {\"key1\": \"value1\", \"key2\": \"value2\"}"
+                }
+              },
+              "required": ["keyValues"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["DEL", "UNLINK"]
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LRANGE", "ZRANGE", "ZREVRANGE"]
+                },
+                "startIndex": {
+                  "type": "integer",
+                  "title": "起始索引",
+                  "description": "列表或有序集合的起始索引",
+                  "default": 0
+                },
+                "endIndex": {
+                  "type": "integer",
+                  "title": "结束索引",
+                  "description": "列表或有序集合的结束索引",
+                  "default": -1
+                }
+              },
+              "required": ["startIndex", "endIndex"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["ZRANGEBYSCORE", "ZREMRANGEBYSCORE"]
+                },
+                "minScore": {
+                  "type": "number",
+                  "title": "最小分数",
+                  "description": "有序集合的最小分数",
+                  "default": 0
+                },
+                "maxScore": {
+                  "type": "number",
+                  "title": "最大分数",
+                  "description": "有序集合的最大分数",
+                  "default": 100
+                }
+              },
+              "required": ["minScore", "maxScore"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HGET", "HEXISTS"]
+                },
+                "field": {
+                  "type": "string",
+                  "title": "字段名",
+                  "description": "哈希表字段名称，支持#{变量}引用"
+                }
+              },
+              "required": ["field"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HSET"]
+                },
+                "field": {
+                  "type": "string",
+                  "title": "字段名",
+                  "description": "哈希表字段名称，支持#{变量}引用"
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "要设置的值，支持#{变量}引用"
+                }
+              },
+              "required": ["field", "value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HINCRBY"]
+                },
+                "field": {
+                  "type": "string",
+                  "title": "字段名",
+                  "description": "哈希表字段名称，支持#{变量}引用"
+                },
+                "increment": {
+                  "type": "integer",
+                  "title": "增量",
+                  "description": "整数增量值",
+                  "default": 1
+                }
+              },
+              "required": ["field", "increment"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HINCRBYFLOAT"]
+                },
+                "field": {
+                  "type": "string",
+                  "title": "字段名",
+                  "description": "哈希表字段名称，支持#{变量}引用"
+                },
+                "increment": {
+                  "type": "number",
+                  "title": "增量",
+                  "description": "浮点数增量值",
+                  "default": 1.0
+                }
+              },
+              "required": ["field", "increment"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HMGET", "HDEL"]
+                },
+                "fields": {
+                  "type": "string",
+                  "title": "字段列表",
+                  "description": "JSON格式数组，例如: [\"field1\", \"field2\"]"
+                }
+              },
+              "required": ["fields"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["HMSET"]
+                },
+                "fieldValues": {
+                  "type": "string",
+                  "title": "字段值映射",
+                  "description": "JSON格式对象，例如: {\"field1\": \"value1\", \"field2\": \"value2\"}"
+                }
+              },
+              "required": ["fieldValues"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LPUSH", "RPUSH", "SADD", "SREM", "PFADD"]
+                },
+                "members": {
+                  "type": "string",
+                  "title": "成员列表",
+                  "description": "JSON格式数组，例如: [\"member1\", \"member2\"]"
+                }
+              },
+              "required": ["members"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LREM"]
+                },
+                "count": {
+                  "type": "integer",
+                  "title": "数量",
+                  "description": "要移除的元素数量 (0表示全部)",
+                  "default": 0
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "要移除的元素值"
+                }
+              },
+              "required": ["count", "value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LTRIM"]
+                },
+                "startIndex": {
+                  "type": "integer",
+                  "title": "起始索引",
+                  "description": "列表的起始索引",
+                  "default": 0
+                },
+                "endIndex": {
+                  "type": "integer",
+                  "title": "结束索引",
+                  "description": "列表的结束索引",
+                  "default": -1
+                }
+              },
+              "required": ["startIndex", "endIndex"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LINDEX"]
+                },
+                "index": {
+                  "type": "integer",
+                  "title": "索引",
+                  "description": "列表的索引位置",
+                  "default": 0
+                }
+              },
+              "required": ["index"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["LSET"]
+                },
+                "index": {
+                  "type": "integer",
+                  "title": "索引",
+                  "description": "列表的索引位置",
+                  "default": 0
+                },
+                "value": {
+                  "type": "string",
+                  "title": "值",
+                  "description": "要设置的元素值"
+                }
+              },
+              "required": ["index", "value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SISMEMBER"]
+                },
+                "member": {
+                  "type": "string",
+                  "title": "成员",
+                  "description": "要检查的集合成员"
+                }
+              },
+              "required": ["member"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SPOP", "SRANDMEMBER"]
+                },
+                "count": {
+                  "type": "integer",
+                  "title": "数量",
+                  "description": "要获取的成员数量",
+                  "default": 1,
+                  "minimum": 1
+                }
+              },
+              "required": ["count"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["ZADD"]
+                },
+                "member": {
+                  "type": "string",
+                  "title": "成员",
+                  "description": "有序集合成员"
+                },
+                "score": {
+                  "type": "number",
+                  "title": "分数",
+                  "description": "有序集合成员的分数",
+                  "default": 1.0
+                }
+              },
+              "required": ["member", "score"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["ZREM", "ZSCORE"]
+                },
+                "member": {
+                  "type": "string",
+                  "title": "成员",
+                  "description": "有序集合成员"
+                }
+              },
+              "required": ["member"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["ZINCRBY"]
+                },
+                "member": {
+                  "type": "string",
+                  "title": "成员",
+                  "description": "有序集合成员"
+                },
+                "increment": {
+                  "type": "number",
+                  "title": "增量",
+                  "description": "分数增量",
+                  "default": 1.0
+                }
+              },
+              "required": ["member", "increment"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["SETBIT"]
+                },
+                "offset": {
+                  "type": "integer",
+                  "title": "偏移量",
+                  "description": "位图的位偏移量",
+                  "default": 0,
+                  "minimum": 0
+                },
+                "value": {
+                  "type": "integer",
+                  "title": "值",
+                  "description": "位的值 (0或1)",
+                  "enum": [0, 1],
+                  "default": 1
+                }
+              },
+              "required": ["offset", "value"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["GETBIT"]
+                },
+                "offset": {
+                  "type": "integer",
+                  "title": "偏移量",
+                  "description": "位图的位偏移量",
+                  "default": 0,
+                  "minimum": 0
+                }
+              },
+              "required": ["offset"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["BITOP"]
+                },
+                "operation_type": {
+                  "type": "string",
+                  "title": "操作类型",
+                  "enum": ["AND", "OR", "XOR", "NOT"],
+                  "enumNames": [
+                    "与操作 (AND)",
+                    "或操作 (OR)",
+                    "异或操作 (XOR)",
+                    "非操作 (NOT)"
+                  ],
+                  "default": "AND"
+                },
+                "destkey": {
+                  "type": "string",
+                  "title": "目标键",
+                  "description": "存储结果的键名"
+                },
+                "sourcekeys": {
+                  "type": "string",
+                  "title": "源键列表",
+                  "description": "JSON格式数组，例如: [\"key1\", \"key2\"]"
+                }
+              },
+              "required": ["operation_type", "destkey", "sourcekeys"]
+            },
+            {
+              "properties": {
+                "operation": {
+                  "enum": ["PFMERGE"]
+                },
+                "destkey": {
+                  "type": "string",
+                  "title": "目标键",
+                  "description": "存储合并结果的键名"
+                },
+                "sourcekeys": {
+                  "type": "string",
+                  "title": "源键列表",
+                  "description": "JSON格式数组，例如: [\"key1\", \"key2\"]"
+                }
+              },
+              "required": ["destkey", "sourcekeys"]
+            }
+          ]
+        },
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["RETRY"] },
+                "maxRetries": { "type": "integer" },
+                "retryInterval": { "type": "integer" }
+              },
+              "required": ["maxRetries", "retryInterval"]
+            },
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["FAIL", "IGNORE"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "ui:order": [
+        "nodeType",
+        "nodeId",
+        "hostname",
+        "port",
+        "password",
+        "database",
+        "dataType",
+        "operation",
+        "key",
+        "field",
+        "fields",
+        "value",
+        "expireTime",
+        "fieldValues",
+        "member",
+        "members",
+        "startIndex",
+        "endIndex",
+        "minScore",
+        "maxScore",
+        "score",
+        "increment",
+        "index",
+        "count",
+        "keys",
+        "keyValues",
+        "offset",
+        "operation_type",
+        "destkey",
+        "sourcekeys",
+        "*"
+      ],
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "hostname": {
+        "ui:placeholder": "例如: localhost 或 redis.example.com"
+      },
+      "port": {
+        "ui:widget": "updown"
+      },
+      "password": {
+        "ui:widget": "password",
+        "ui:placeholder": "请输入Redis密码，如无则留空"
+      },
+      "database": {
+        "ui:widget": "updown"
+      },
+      "dataType": {
+        "ui:widget": "select"
+      },
+      "operation": {
+        "ui:widget": "select"
+      },
+      "operation_type": {
+        "ui:widget": "select"
+      },
+      "key": {
+        "ui:placeholder": "例如: user:profile:#{userId}"
+      },
+      "keys": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: [\"key1\", \"key2\", \"key3\"]"
+      },
+      "keyValues": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: {\"key1\": \"value1\", \"key2\": \"value2\"}"
+      },
+      "field": {
+        "ui:placeholder": "例如: username"
+      },
+      "fields": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: [\"field1\", \"field2\", \"field3\"]"
+      },
+      "fieldValues": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: {\"field1\": \"value1\", \"field2\": \"value2\"}"
+      },
+      "value": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: #{user.name} 或 JSON格式数据"
+      },
+      "expireTime": {
+        "ui:widget": "updown"
+      },
+      "startIndex": {
+        "ui:widget": "updown"
+      },
+      "endIndex": {
+        "ui:widget": "updown"
+      },
+      "index": {
+        "ui:widget": "updown"
+      },
+      "count": {
+        "ui:widget": "updown"
+      },
+      "minScore": {
+        "ui:widget": "updown"
+      },
+      "maxScore": {
+        "ui:widget": "updown"
+      },
+      "score": {
+        "ui:widget": "updown"
+      },
+      "increment": {
+        "ui:widget": "updown"
+      },
+      "offset": {
+        "ui:widget": "updown"
+      },
+      "member": {
+        "ui:placeholder": "例如: member1"
+      },
+      "members": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: [\"member1\", \"member2\", \"member3\"]"
+      },
+      "destkey": {
+        "ui:placeholder": "例如: result_key"
+      },
+      "sourcekeys": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "例如: [\"key1\", \"key2\", \"key3\"]"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"缓存操作失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"key\": \"user:profile:123\",\n  \"value\": \"测试值\",\n  \"mockResult\": \"OK\"\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "Redis 节点",
+      "description": "执行Redis缓存操作",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "hostname",
+            "port",
+            "password",
+            "database",
+            "dataType",
+            "operation",
+            "key",
+            "keys",
+            "keyValues",
+            "value",
+            "expireTime",
+            "field",
+            "fields",
+            "fieldValues",
+            "member",
+            "members",
+            "startIndex",
+            "endIndex",
+            "minScore",
+            "maxScore",
+            "score",
+            "increment",
+            "index",
+            "count",
+            "offset",
+            "operation_type",
+            "destkey",
+            "sourcekeys"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "SWITCH": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "SWITCH",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "expression": {
+          "type": "string",
+          "title": "表达式",
+          "default": "#{payload}"
+        },
+        "evaluationMode": {
+          "type": "string",
+          "title": "条件评估模式",
+          "enum": ["VALUE", "EXPRESSION"],
+          "enumNames": ["值比较", "表达式匹配"],
+          "default": "VALUE"
+        },
+        "cases": {
+          "type": "array",
+          "title": "分支条件列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "condition": {
+                "type": "string",
+                "title": "条件"
+              },
+              "target": {
+                "type": "string",
+                "title": "目标"
+              }
+            }
+          }
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "DEFAULT_BRANCH"],
+          "enumNames": ["终止流程", "忽略错误", "使用默认分支"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 5000,
+          "description": "节点执行的最长等待时间"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "dependencies": {
+        "defaultBehavior": {
+          "oneOf": [
+            {
+              "properties": {
+                "defaultBehavior": { "enum": ["USE_DEFAULT"] },
+                "defaultTarget": {
+                  "type": "string",
+                  "title": "默认分支目标",
+                  "description": "默认分支连接的目标节点"
+                }
+              }
+            },
+            {
+              "properties": {
+                "defaultBehavior": { "enum": ["THROW_ERROR", "IGNORE"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "expression": {
+        "ui:placeholder": "请输入表达式 (例如: #{payload.status})"
+      },
+      "evaluationMode": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "cases": {
+        "ui:field": "BranchConditionsField"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"条件分支失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"payload\": {\n    \"status\": \"success\"\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "分支节点",
+      "description": "条件分支路由",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "expression",
+            "evaluationMode",
+            "cases",
+            "defaultBehavior",
+            "defaultTarget"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": ["errorStrategy", "timeout", "fallbackResponse"]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "LOOP": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "LOOP",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "mode": {
+          "type": "string",
+          "title": "循环模式",
+          "enum": ["WHILE", "FOR", "FOR_EACH"],
+          "enumNames": ["WHILE循环", "FOR循环", "FOR_EACH遍历"],
+          "default": "WHILE"
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "CONTINUE", "RETRY"],
+          "enumNames": ["终止流程", "继续执行", "重试执行"],
+          "default": "FAIL"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 60000
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "default": "{}"
+        },
+        "outputSeparator": {
+          "type": "string",
+          "title": "循环输出配置"
+        },
+        "outputMode": {
+          "type": "string",
+          "title": "输出模式",
+          "enum": ["COLLECT", "LAST", "NONE"],
+          "enumNames": ["收集所有结果", "仅最后结果", "不输出"],
+          "default": "COLLECT"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        },
+        "subflow": {
+          "type": "object",
+          "title": "子流程配置",
+          "properties": {
+            "height": {
+              "type": "integer",
+              "title": "高度",
+              "default": 154
+            },
+            "width": {
+              "type": "integer",
+              "title": "宽度",
+              "default": 320
+            }
+          }
+        }
+      },
+      "required": ["mode"],
+      "dependencies": {
+        "mode": {
+          "oneOf": [
+            {
+              "properties": {
+                "mode": { "enum": ["WHILE"] },
+                "conditionVariable": {
+                  "type": "string",
+                  "title": "条件变量名",
+                  "default": "index"
+                },
+                "condition": {
+                  "type": "string",
+                  "title": "循环条件",
+                  "default": "#{index < 10}"
+                },
+                "maxIterations": {
+                  "type": "integer",
+                  "title": "最大迭代次数",
+                  "default": 10000,
+                  "minimum": 1,
+                  "maximum": 100000
+                }
+              },
+              "required": ["condition", "maxIterations"]
+            },
+            {
+              "properties": {
+                "mode": { "enum": ["FOR_EACH"] },
+                "collection": {
+                  "type": "string",
+                  "title": "集合表达式",
+                  "default": "#{payload.items}"
+                },
+                "itemVariable": {
+                  "type": "string",
+                  "title": "元素变量名",
+                  "default": "item"
+                },
+                "indexVariable": {
+                  "type": "string",
+                  "title": "索引变量名",
+                  "default": "index"
+                },
+                "maxIterations": {
+                  "type": "integer",
+                  "title": "最大迭代次数",
+                  "default": 10000,
+                  "minimum": 1,
+                  "maximum": 100000
+                }
+              },
+              "required": ["collection", "itemVariable", "maxIterations"]
+            },
+            {
+              "properties": {
+                "mode": { "enum": ["FOR"] },
+                "iteratorVariable": {
+                  "type": "string",
+                  "title": "迭代变量名",
+                  "default": "index"
+                },
+                "initialization": {
+                  "type": "string",
+                  "title": "初始化表达式",
+                  "default": "#{index = 0}"
+                },
+                "condition": {
+                  "type": "string",
+                  "title": "条件表达式",
+                  "default": "#{index < 10}"
+                },
+                "increment": {
+                  "type": "string",
+                  "title": "增量表达式",
+                  "default": "#{index++}"
+                },
+                "maxIterations": {
+                  "type": "integer",
+                  "title": "最大迭代次数",
+                  "default": 10000,
+                  "minimum": 1,
+                  "maximum": 100000
+                }
+              },
+              "required": [
+                "iteratorVariable",
+                "initialization",
+                "condition",
+                "increment",
+                "maxIterations"
+              ]
+            }
+          ]
+        },
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["RETRY"] }
+              },
+              "required": ["maxRetries", "retryInterval"]
+            },
+            {
+              "properties": {
+                "errorStrategy": { "enum": ["FAIL", "CONTINUE"] }
+              }
+            }
+          ]
+        },
+        "outputMode": {
+          "oneOf": [
+            {
+              "properties": {
+                "outputMode": { "enum": ["NONE"] }
+              }
+            },
+            {
+              "properties": {
+                "outputMode": { "enum": ["COLLECT", "LAST"] },
+                "outputVariable": {
+                  "type": "string",
+                  "title": "输出变量名",
+                  "default": "loopResult"
+                },
+                "resultMergeStrategy": {
+                  "type": "string",
+                  "title": "结果合并策略",
+                  "enum": ["ARRAY", "MERGE"],
+                  "enumNames": ["数组列表", "对象合并"],
+                  "default": "ARRAY"
+                }
+              },
+              "required": ["outputVariable"]
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "ui:order": [
+        "nodeType",
+        "nodeId",
+        "mode",
+        "conditionVariable",
+        "condition",
+        "collection",
+        "itemVariable",
+        "indexVariable",
+        "iteratorVariable",
+        "initialization",
+        "condition",
+        "increment",
+        "maxIterations",
+        "outputSeparator",
+        "outputMode",
+        "outputVariable",
+        "resultMergeStrategy",
+        "*"
+      ],
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "mode": {
+        "ui:widget": "select",
+        "ui:help": "选择不同的循环模式将显示对应的配置选项"
+      },
+      "conditionVariable": {
+        "ui:placeholder": "请输入条件变量名（例如：index）"
+      },
+      "iteratorVariable": {
+        "ui:placeholder": "请输入迭代变量名（例如：index）"
+      },
+      "itemVariable": {
+        "ui:placeholder": "请输入元素变量名（例如：item）"
+      },
+      "indexVariable": {
+        "ui:placeholder": "请输入索引变量名（例如：index）"
+      },
+      "condition": {
+        "ui:placeholder": "请输入循环条件（例如：#{index < 10}）"
+      },
+      "collection": {
+        "ui:placeholder": "请输入集合表达式（例如：#{payload.items}）"
+      },
+      "initialization": {
+        "ui:placeholder": "请输入初始化表达式（例如：#{index = 0}）"
+      },
+      "increment": {
+        "ui:placeholder": "请输入增量表达式（例如：#{index++}）"
+      },
+      "maxIterations": {
+        "ui:widget": "updown",
+        "ui:help": "设置过高的迭代次数可能影响性能和资源使用"
+      },
+      "outputSeparator": {
+        "ui:widget": "hidden",
+        "ui:options": {
+          "classNames": "section-title"
+        }
+      },
+      "outputMode": {
+        "ui:widget": "select",
+        "ui:help": "选择循环结果的输出方式",
+        "ui:options": {
+          "classNames": "output-section"
+        }
+      },
+      "outputVariable": {
+        "ui:placeholder": "请输入输出变量名（例如：loopResult）"
+      },
+      "resultMergeStrategy": {
+        "ui:widget": "select",
+        "ui:help": "选择多次迭代结果的合并方式"
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"循环执行失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"index\": 0,\n  \"payload\": {\n    \"items\": [1, 2, 3, 4, 5]\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "循环节点",
+      "description": "循环执行子流程",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": [
+            "nodeType",
+            "nodeId",
+            "mode",
+            "conditionVariable",
+            "condition",
+            "collection",
+            "itemVariable",
+            "indexVariable",
+            "iteratorVariable",
+            "initialization",
+            "condition",
+            "increment",
+            "maxIterations",
+            "outputSeparator",
+            "outputMode",
+            "outputVariable",
+            "resultMergeStrategy"
+          ]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "SCRIPT": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "SCRIPT",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "language": {
+          "type": "string",
+          "title": "脚本语言",
+          "enum": ["javascript", "groovy", "python"],
+          "default": "javascript"
+        },
+        "code": {
+          "type": "string",
+          "title": "脚本代码",
+          "default": "// 在此编写脚本代码\nfunction process(input) {\n  // 处理输入数据\n  return input;\n}"
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE", "RETRY"],
+          "enumNames": ["终止流程", "忽略错误", "重试执行"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "节点执行的最长等待时间"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "title": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "retryInterval": {
+          "type": "integer",
+          "title": "重试间隔(毫秒)",
+          "minimum": 500,
+          "maximum": 60000,
+          "default": 3000
+        },
+        "exponentialBackoff": {
+          "type": "boolean",
+          "title": "启用指数退避",
+          "default": true,
+          "description": "每次重试时间间隔逐渐增加"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数",
+          "description": "用于测试脚本执行的输入参数（JSON格式）"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "dependencies": {
+        "errorStrategy": {
+          "oneOf": [
+            {
+              "properties": {
+                "errorStrategy": {
+                  "enum": ["RETRY"]
+                }
+              },
+              "required": ["maxRetries", "retryInterval"]
+            },
+            {
+              "properties": {
+                "errorStrategy": {
+                  "enum": ["FAIL", "IGNORE"]
+                }
+              }
+            }
+          ]
+        },
+        "language": {
+          "oneOf": [
+            {
+              "properties": {
+                "language": {
+                  "enum": ["javascript"]
+                },
+                "code": {
+                  "title": "JavaScript代码"
+                }
+              }
+            },
+            {
+              "properties": {
+                "language": {
+                  "enum": ["python"]
+                },
+                "code": {
+                  "title": "Python代码"
+                }
+              }
+            },
+            {
+              "properties": {
+                "language": {
+                  "enum": ["groovy"]
+                },
+                "code": {
+                  "title": "Groovy代码"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "language": {
+        "ui:widget": "select"
+      },
+      "code": {
+        "ui:field": "CodeEditorField",
+        "ui:options": {
+          "rows": 15
+        },
+        "ui:placeholder": "// 在此编写脚本代码..."
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "maxRetries": {
+        "ui:widget": "updown"
+      },
+      "retryInterval": {
+        "ui:widget": "updown"
+      },
+      "exponentialBackoff": {
+        "ui:widget": "checkbox"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"脚本执行失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"input\": {\n    \"data\": \"示例数据\"\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "脚本节点",
+      "description": "执行自定义脚本",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": ["nodeType", "nodeId", "language", "code"]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": [
+            "errorStrategy",
+            "timeout",
+            "maxRetries",
+            "retryInterval",
+            "exponentialBackoff",
+            "fallbackResponse"
+          ]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  },
+  "SET_VARIABLE": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "type": "string",
+          "title": "节点类型",
+          "default": "SET_VARIABLE",
+          "readOnly": true
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点ID",
+          "readOnly": true
+        },
+        "description": {
+          "type": "string",
+          "title": "节点描述",
+          "description": "为此变量赋值节点添加说明"
+        },
+        "variables": {
+          "type": "object",
+          "title": "变量定义",
+          "description": "定义节点将设置的变量，支持表达式语法: #{表达式}",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "type": "string",
+          "title": "变量作用域",
+          "description": "设置变量的可见范围",
+          "enum": ["FLOW", "LOCAL"],
+          "enumNames": [
+            "流程作用域 (整个流程可见)",
+            "局部作用域 (仅当前分支或子流程可见)"
+          ],
+          "default": "FLOW"
+        },
+        "errorStrategy": {
+          "type": "string",
+          "title": "错误处理策略",
+          "enum": ["FAIL", "IGNORE"],
+          "enumNames": ["终止流程", "忽略错误"],
+          "default": "FAIL",
+          "description": "当节点执行失败时采取的策略"
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "超时时间(毫秒)",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 5000,
+          "description": "节点执行的最长等待时间"
+        },
+        "fallbackResponse": {
+          "type": "string",
+          "title": "失败返回值",
+          "description": "节点失败时返回的默认JSON数据",
+          "default": "{}"
+        },
+        "debugParams": {
+          "type": "string",
+          "title": "调试参数"
+        },
+        "debugResult": {
+          "type": "string",
+          "title": "返回结果",
+          "readOnly": true
+        },
+        "debugButton": {
+          "type": "string",
+          "title": "",
+          "default": "debug"
+        },
+        "nodeJsonData": {
+          "type": "string",
+          "title": "节点数据定义",
+          "readOnly": true
+        }
+      },
+      "required": ["variables"]
+    },
+    "uiSchema": {
+      "nodeType": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "nodeId": {
+        "ui:readonly": true,
+        "ui:options": {
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default",
+            "fontFamily": "monospace"
+          }
+        }
+      },
+      "description": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "请输入节点描述..."
+      },
+      "variables": {
+        "ui:field": "KVTableField",
+        "ui:options": {
+          "keyPlaceholder": "变量名",
+          "valuePlaceholder": "变量值或表达式",
+          "label": "变量定义"
+        },
+        "ui:help": "变量值支持表达式语法：#{表达式} - 可在表达式中引用其他变量：#{user.id} - 可使用JavaScript表达式：#{price * quantity}"
+      },
+      "scope": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "errorStrategy": {
+        "ui:widget": "select",
+        "ui:options": {
+          "inline": false
+        }
+      },
+      "timeout": {
+        "ui:widget": "updown"
+      },
+      "fallbackResponse": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 3
+        },
+        "ui:placeholder": "输入失败时的默认返回值，例如: {\"status\": \"error\", \"message\": \"变量设置失败\"}"
+      },
+      "debugParams": {
+        "ui:widget": "textarea",
+        "ui:options": {
+          "rows": 5
+        },
+        "ui:placeholder": "{\n  \"context\": {\n    \"existingVar\": \"value\"\n  }\n}"
+      },
+      "debugResult": {
+        "ui:widget": "textarea",
+        "ui:disabled": true,
+        "ui:options": {
+          "rows": 8,
+          "customStyle": {
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50",
+            "cursor": "default"
+          }
+        }
+      },
+      "debugButton": {
+        "ui:field": "ButtonField",
+        "ui:options": {
+          "label": "运行调试",
+          "action": "debug",
+          "color": "primary",
+          "loadingText": "执行中..."
+        }
+      },
+      "nodeJsonData": {
+        "ui:widget": "textarea",
+        "ui:readonly": true,
+        "ui:options": {
+          "rows": 20,
+          "customStyle": {
+            "fontFamily": "monospace",
+            "fontSize": "12px",
+            "backgroundColor": "#f8f9fa",
+            "border": "1px solid #dde2e6",
+            "color": "#2c3e50"
+          }
+        }
+      },
+      "ui:submitButtonOptions": {
+        "norender": true
+      }
+    },
+    "panelConfig": {
+      "title": "变量节点",
+      "description": "设置流程变量",
+      "tabs": [
+        {
+          "id": "basic",
+          "title": "基本属性",
+          "fields": ["nodeType", "nodeId", "description", "variables", "scope"]
+        },
+        {
+          "id": "error",
+          "title": "异常处理",
+          "fields": ["errorStrategy", "timeout", "fallbackResponse"]
+        },
+        {
+          "id": "debug",
+          "title": "节点调试",
+          "fields": ["debugParams", "debugButton", "debugResult"]
+        },
+        {
+          "id": "data",
+          "title": "数据定义",
+          "fields": ["nodeJsonData"]
+        }
+      ]
+    }
+  }
+}
